@@ -82,57 +82,117 @@
 .section { display: flex; flex-direction: column; gap: 16px; }
 
 .sectionLabel {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
+  letter-spacing: -0.1px;
+  color: var(--text);
+  margin-bottom: 4px;
 }
 
-/* Roadmap grid */
-.roadmapGrid {
+/* ── Roadmap cards ── */
+.roadmapCards {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
 
-@media (max-width: 600px) {
-  .roadmapGrid { grid-template-columns: 1fr; }
+@media (max-width: 700px) {
+  .roadmapCards { grid-template-columns: repeat(2, 1fr); }
 }
 
-.phaseGroup { display: flex; flex-direction: column; gap: 8px; }
-
-.phaseLabel {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted-2);
-  letter-spacing: 0.02em;
+@media (max-width: 420px) {
+  .roadmapCards { grid-template-columns: 1fr; }
 }
 
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: var(--bg);
+.phaseCard {
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-2);
-  transition: border-color 0.12s, background 0.12s, color 0.12s;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.phaseCardHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.phaseNum {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted-2);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.phaseTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.1px;
+}
+
+.skillList {
+  display: flex;
+  flex-direction: column;
+}
+
+.skillRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 16px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
   cursor: pointer;
 }
 
-.chip:hover {
-  border-color: var(--border-hover);
-  background: var(--surface-2);
-  color: var(--text);
+.skillRow:last-child { border-bottom: none; }
+
+.skillRow:hover { background: var(--surface-2); }
+
+.skillRow:hover .skillArrow { opacity: 1; color: var(--text); }
+.skillRow:hover .skillName { color: var(--text); }
+
+.skillInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
-.chip svg { color: var(--muted-2); flex-shrink: 0; }
+.skillName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  transition: color 0.12s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.skillSub {
+  font-size: 10px;
+  color: var(--muted-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.skillArrow {
+  color: var(--muted-2);
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 0.12s, color 0.12s;
+}
 
 /* HN Stories */
 .stories {

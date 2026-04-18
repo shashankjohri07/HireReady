@@ -1,39 +1,43 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useChat } from '../hooks/useChat.js';
 import ChatWindow from '../components/ChatWindow.jsx';
 import styles from './SkillMap.module.css';
 
 const ROADMAP = [
   {
-    phase: '01 · Foundations',
+    num: '01',
+    label: 'Foundations',
     nodes: [
-      { id: 'core_skills',   title: 'Core Skills' },
-      { id: 'tools',         title: 'Tools & Workflow' },
-      { id: 'communication', title: 'Communication' },
+      { id: 'core_skills',   title: 'Core Skills',      sub: 'Role-specific fundamentals' },
+      { id: 'tools',         title: 'Tools & Workflow',  sub: 'Industry-standard tooling'  },
+      { id: 'communication', title: 'Communication',     sub: 'Writing · async · presenting' },
     ],
   },
   {
-    phase: '02 · Build Depth',
+    num: '02',
+    label: 'Build Depth',
     nodes: [
-      { id: 'domain',         title: 'Domain Knowledge' },
-      { id: 'projects',       title: 'Projects' },
-      { id: 'problemsolving', title: 'Problem Solving' },
+      { id: 'domain',          title: 'Domain Knowledge', sub: 'Industry + role concepts' },
+      { id: 'projects',        title: 'Projects',          sub: 'Portfolio that proves skills' },
+      { id: 'problemsolving',  title: 'Problem Solving',   sub: 'Cases · coding · analysis' },
     ],
   },
   {
-    phase: '03 · Interview Prep',
+    num: '03',
+    label: 'Interview Prep',
     nodes: [
-      { id: 'resume',      title: 'Resume & LinkedIn' },
-      { id: 'behavioural', title: 'Behavioural' },
-      { id: 'technical',   title: 'Technical Round' },
+      { id: 'resume',      title: 'Resume & LinkedIn', sub: 'ATS-ready · impact-driven' },
+      { id: 'behavioural', title: 'Behavioural',       sub: 'STAR · common questions'   },
+      { id: 'technical',   title: 'Technical Round',   sub: 'Role-specific depth'        },
     ],
   },
   {
-    phase: '04 · Land the Offer',
+    num: '04',
+    label: 'Land the Offer',
     nodes: [
-      { id: 'applications', title: 'Applications' },
-      { id: 'networking',   title: 'Networking' },
-      { id: 'negotiation',  title: 'Negotiation' },
+      { id: 'applications', title: 'Applications', sub: 'Where + how to apply'       },
+      { id: 'networking',   title: 'Networking',    sub: 'Referrals · cold outreach'  },
+      { id: 'negotiation',  title: 'Negotiation',   sub: 'Salary · offer evaluation'  },
     ],
   },
 ];
@@ -54,10 +58,10 @@ function timeAgo(unix) {
 
 export default function SkillMap() {
   const [targetRole, setTargetRole] = useState('');
-  const [roleSet, setRoleSet] = useState(false);
+  const [roleSet,    setRoleSet]    = useState(false);
   const [activeNode, setActiveNode] = useState(null);
-  const [view, setView] = useState('feed'); // 'feed' | 'chat'
-  const [stories, setStories] = useState([]);
+  const [view,       setView]       = useState('feed');
+  const [stories,    setStories]    = useState([]);
   const [storiesLoading, setStoriesLoading] = useState(true);
   const { messages, streaming, loading, error, sendMessage, reset } = useChat('skillmap');
 
@@ -101,90 +105,24 @@ export default function SkillMap() {
     reset();
   }
 
-  return (
-    <div className={styles.page}>
-      <div className={styles.roleBar}>
-        <form className={styles.roleForm} onSubmit={handleRoleSubmit}>
-          <span className={styles.roleLabel}>Target role</span>
-          <input
-            className={styles.roleInput}
-            value={targetRole}
-            onChange={(e) => { setTargetRole(e.target.value); setRoleSet(false); }}
-            placeholder="e.g. Backend Developer, Data Analyst, Product Manager..."
-          />
-          {!roleSet ? (
-            <button className={styles.roleBtn} type="submit" disabled={!targetRole.trim()}>
-              Set
-            </button>
-          ) : (
-            <span className={styles.roleBadge}>{targetRole}</span>
-          )}
-        </form>
-      </div>
+  // Hide the raw auto-generated prompts — show only the AI responses
+  const displayMessages = messages.filter(
+    m => !(m.role === 'user' && (
+      m.content.startsWith('Explain **') ||
+      m.content.startsWith('I just read this headline')
+    ))
+  );
 
-      {view === 'feed' ? (
-        <div className={styles.feed}>
-          <section className={styles.section}>
-            <p className={styles.sectionLabel}>CAREER ROADMAP</p>
-            <div className={styles.roadmapGrid}>
-              {ROADMAP.map((phase) => (
-                <div key={phase.phase} className={styles.phaseGroup}>
-                  <p className={styles.phaseLabel}>{phase.phase}</p>
-                  <div className={styles.chips}>
-                    {phase.nodes.map((node) => (
-                      <button
-                        key={node.id}
-                        className={styles.chip}
-                        onClick={() => handleNodeClick(node)}
-                      >
-                        {node.title}
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <path d="M7 17L17 7M7 7h10v10"/>
-                        </svg>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className={styles.section}>
-            <p className={styles.sectionLabel}>TODAY IN TECH · Hacker News</p>
-            {storiesLoading ? (
-              <div className={styles.storiesSkeleton}>
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className={styles.skeletonCard} />
-                ))}
-              </div>
-            ) : (
-              <div className={styles.stories}>
-                {stories.map((story) => (
-                  <button
-                    key={story.id}
-                    className={styles.storyCard}
-                    onClick={() => handleStoryClick(story)}
-                  >
-                    <p className={styles.storyTitle}>{story.title}</p>
-                    <div className={styles.storyMeta}>
-                      <span>{story.score} points</span>
-                      <span>{story.descendants ?? 0} comments</span>
-                      <span>{timeAgo(story.time)}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
-        </div>
-      ) : (
+  if (view === 'chat') {
+    return (
+      <div className={styles.page}>
         <div className={styles.chatView}>
           <div className={styles.chatHeader}>
             <button className={styles.backBtn} onClick={handleBack}>← Back</button>
             {activeNode && <span className={styles.chatTopic}>{activeNode}</span>}
           </div>
           <ChatWindow
-            messages={messages}
+            messages={displayMessages}
             streaming={streaming}
             loading={loading}
             error={error}
@@ -193,7 +131,86 @@ export default function SkillMap() {
             placeholder="Ask a follow-up question..."
           />
         </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.page}>
+      {/* Role bar */}
+      <div className={styles.roleBar}>
+        <form className={styles.roleForm} onSubmit={handleRoleSubmit}>
+          <span className={styles.roleLabel}>Target role</span>
+          <input
+            className={styles.roleInput}
+            value={targetRole}
+            onChange={e => { setTargetRole(e.target.value); setRoleSet(false); }}
+            placeholder="e.g. Backend Developer, Data Analyst, Product Manager..."
+          />
+          {!roleSet ? (
+            <button className={styles.roleBtn} type="submit" disabled={!targetRole.trim()}>Set</button>
+          ) : (
+            <span className={styles.roleBadge}>{targetRole}</span>
+          )}
+        </form>
+      </div>
+
+      <div className={styles.feed}>
+        {/* Roadmap */}
+        <section className={styles.section}>
+          <p className={styles.sectionLabel}>Career Roadmap</p>
+          <div className={styles.roadmapCards}>
+            {ROADMAP.map(phase => (
+              <div key={phase.num} className={styles.phaseCard}>
+                <div className={styles.phaseCardHead}>
+                  <span className={styles.phaseNum}>{phase.num}</span>
+                  <span className={styles.phaseTitle}>{phase.label}</span>
+                </div>
+                <div className={styles.skillList}>
+                  {phase.nodes.map(node => (
+                    <button
+                      key={node.id}
+                      className={styles.skillRow}
+                      onClick={() => handleNodeClick(node)}
+                    >
+                      <div className={styles.skillInfo}>
+                        <span className={styles.skillName}>{node.title}</span>
+                        <span className={styles.skillSub}>{node.sub}</span>
+                      </div>
+                      <svg className={styles.skillArrow} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M7 17L17 7M7 7h10v10"/>
+                      </svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* HN Stories */}
+        <section className={styles.section}>
+          <p className={styles.sectionLabel}>Today in Tech · Hacker News</p>
+          {storiesLoading ? (
+            <div className={styles.storiesSkeleton}>
+              {[...Array(4)].map((_, i) => <div key={i} className={styles.skeletonCard} />)}
+            </div>
+          ) : (
+            <div className={styles.stories}>
+              {stories.map(story => (
+                <button key={story.id} className={styles.storyCard} onClick={() => handleStoryClick(story)}>
+                  <p className={styles.storyTitle}>{story.title}</p>
+                  <div className={styles.storyMeta}>
+                    <span>{story.score} points</span>
+                    <span>{story.descendants ?? 0} comments</span>
+                    <span>{timeAgo(story.time)}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
