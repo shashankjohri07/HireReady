@@ -88,6 +88,12 @@
   color: var(--muted-2);
 }
 
+.urlHint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
 .fetchingDot {
   display: inline-block;
   width: 6px;

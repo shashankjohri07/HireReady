@@ -32,9 +32,8 @@ function parseTitle(raw) {
   return { role: '', company: '' };
 }
 
-const SKIP_PATTERNS = [
-  /linkedin\.com\/feed/,
-  /linkedin\.com\/?$/,
+const SKIP_FETCH = [
+  /linkedin\.com/,       // LinkedIn blocks server-side requests
   /naukri\.com\/?$/,
   /naukri\.com\/mnjuser/,
   /indeed\.com\/?$/,
@@ -42,17 +41,24 @@ const SKIP_PATTERNS = [
 ];
 
 function normalizeUrl(val) {
-  // LinkedIn search-results page with currentJobId → convert to /jobs/view/
-  const linkedInSearch = val.match(/linkedin\.com\/jobs\/search[^?]*\?.*[?&]currentJobId=(\d+)/);
-  if (linkedInSearch) {
-    return `https://www.linkedin.com/jobs/view/${linkedInSearch[1]}/`;
-  }
+  const m = val.match(/linkedin\.com\/jobs\/search[^?]*\?.*[?&]currentJobId=(\d+)/);
+  if (m) return `https://www.linkedin.com/jobs/view/${m[1]}/`;
   return val;
 }
 
 function isUrl(val) {
-  if (!/^https?:\/\/.+\..+/.test(val.trim())) return false;
-  return !SKIP_PATTERNS.some(p => p.test(val));
+  return /^https?:\/\/.+\..+/.test(val.trim());
+}
+
+function canFetch(val) {
+  return isUrl(val) && !SKIP_FETCH.some(p => p.test(val));
+}
+
+function getUrlHint(val) {
+  if (/linkedin\.com\/jobs\/view\/\d+/.test(val)) {
+    return 'LinkedIn blocks auto-fill — enter company and role below';
+  }
+  return null;
 }
 
 async function fetchJobDetails(url) {
@@ -72,6 +78,7 @@ export default function JobModal({ mode, initialStatus, job, onSave, onClose }) 
     notes:   job?.notes   ?? '',
   });
   const [fetching, setFetching] = useState(false);
+  const [urlHint,  setUrlHint]  = useState(null);
 
   const firstInputRef = useRef(null);
   const fetchTimer    = useRef(null);
@@ -90,11 +97,11 @@ export default function JobModal({ mode, initialStatus, job, onSave, onClose }) 
   function handleLinkChange(value) {
     const normalized = normalizeUrl(value);
     set('link', normalized);
+    setUrlHint(getUrlHint(normalized));
 
     clearTimeout(fetchTimer.current);
-    if (!isUrl(normalized)) return;
+    if (!canFetch(normalized)) return;
 
-    // Only auto-fill if company/role are still empty
     fetchTimer.current = setTimeout(async () => {
       setFetching(true);
       try {
@@ -150,6 +157,7 @@ export default function JobModal({ mode, initialStatus, job, onSave, onClose }) 
               onChange={e => handleLinkChange(e.target.value)}
               placeholder="https://linkedin.com/jobs/… or naukri.com/…"
             />
+            {urlHint && <p className={styles.urlHint}>{urlHint}</p>}
           </div>
 
           <div className={styles.row}>
