@@ -33,7 +33,6 @@ function parseTitle(raw) {
 }
 
 const SKIP_PATTERNS = [
-  /linkedin\.com\/jobs\/search/,
   /linkedin\.com\/feed/,
   /linkedin\.com\/?$/,
   /naukri\.com\/?$/,
@@ -41,6 +40,15 @@ const SKIP_PATTERNS = [
   /indeed\.com\/?$/,
   /indeed\.com\/jobs\?/,
 ];
+
+function normalizeUrl(val) {
+  // LinkedIn search-results page with currentJobId → convert to /jobs/view/
+  const linkedInSearch = val.match(/linkedin\.com\/jobs\/search[^?]*\?.*[?&]currentJobId=(\d+)/);
+  if (linkedInSearch) {
+    return `https://www.linkedin.com/jobs/view/${linkedInSearch[1]}/`;
+  }
+  return val;
+}
 
 function isUrl(val) {
   if (!/^https?:\/\/.+\..+/.test(val.trim())) return false;
@@ -80,16 +88,17 @@ export default function JobModal({ mode, initialStatus, job, onSave, onClose }) 
   }
 
   function handleLinkChange(value) {
-    set('link', value);
+    const normalized = normalizeUrl(value);
+    set('link', normalized);
 
     clearTimeout(fetchTimer.current);
-    if (!isUrl(value)) return;
+    if (!isUrl(normalized)) return;
 
     // Only auto-fill if company/role are still empty
     fetchTimer.current = setTimeout(async () => {
       setFetching(true);
       try {
-        const { title, ogTitle } = await fetchJobDetails(value);
+        const { title, ogTitle } = await fetchJobDetails(normalized);
         const { role, company } = parseTitle(ogTitle || title);
         setForm(f => ({
           ...f,
