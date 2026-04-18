@@ -32,8 +32,19 @@ function parseTitle(raw) {
   return { role: '', company: '' };
 }
 
+const SKIP_PATTERNS = [
+  /linkedin\.com\/jobs\/search/,
+  /linkedin\.com\/feed/,
+  /linkedin\.com\/?$/,
+  /naukri\.com\/?$/,
+  /naukri\.com\/mnjuser/,
+  /indeed\.com\/?$/,
+  /indeed\.com\/jobs\?/,
+];
+
 function isUrl(val) {
-  return /^https?:\/\/.+\..+/.test(val.trim());
+  if (!/^https?:\/\/.+\..+/.test(val.trim())) return false;
+  return !SKIP_PATTERNS.some(p => p.test(val));
 }
 
 async function fetchJobDetails(url) {

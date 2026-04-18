@@ -189,20 +189,6 @@ export default function JobTracker() {
         })}
       </div>
 
-      {jobs.length === 0 && (
-        <div className={styles.emptyBoard}>
-          <p className={styles.emptyTitle}>No jobs tracked yet</p>
-          <p className={styles.emptySub}>
-            Paste any job URL when adding — company and role fill in automatically.
-          </p>
-          <button
-            className={styles.emptyAddBtn}
-            onClick={() => setModal({ mode: 'add', status: 'applied' })}
-          >
-            + Add your first job
-          </button>
-        </div>
-      )}
 
       {modal && (
         <JobModal
