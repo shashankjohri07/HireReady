@@ -1,0 +1,103 @@
+.roadmap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.phaseWrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.phase {
+  width: 196px;
+  flex-shrink: 0;
+}
+
+.phaseHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 0 2px;
+}
+
+.phaseNum {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted-2);
+  letter-spacing: 0.05em;
+}
+
+.phaseLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.1px;
+}
+
+.nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.node {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: border-color 0.12s, box-shadow 0.12s, background 0.12s;
+  cursor: pointer;
+  width: 100%;
+}
+
+.node:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.nodeActive {
+  background: var(--text);
+  border-color: var(--text);
+}
+
+.nodeActive .nodeTitle,
+.nodeActive .nodeSub {
+  color: var(--inverse-text);
+}
+
+.nodeActive .nodeSub {
+  opacity: 0.65;
+}
+
+.nodeTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.1px;
+}
+
+.nodeSub {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* Arrow connector between phases */
+.connector {
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-2);
+  flex-shrink: 0;
+  padding-top: 34px; /* align with middle of nodes */
+}

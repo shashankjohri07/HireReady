@@ -1,0 +1,112 @@
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: grab;
+  transition: box-shadow 0.12s, border-color 0.12s;
+  box-shadow: var(--shadow-xs);
+  user-select: none;
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.card:active { cursor: grabbing; }
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.info { flex: 1; min-width: 0; }
+
+.company {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.role {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.12s;
+  flex-shrink: 0;
+}
+
+.card:hover .actions { opacity: 1; }
+
+.action {
+  background: transparent;
+  border: none;
+  color: var(--muted-2);
+  padding: 3px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.12s, background 0.12s;
+}
+
+.action:hover { color: var(--text); background: var(--surface-2); }
+.actionDelete:hover { color: #dc2626; }
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.badge {
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--surface-2);
+  border-radius: 4px;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+}
+
+.notePreview {
+  font-size: 11px;
+  color: var(--muted-2);
+  font-style: italic;
+  line-height: 1.4;
+  width: 100%;
+}
+
+.prepBtn {
+  background: var(--text);
+  color: var(--inverse-text);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  width: 100%;
+  text-align: center;
+  transition: opacity 0.12s;
+  margin-top: 2px;
+}
+
+.prepBtn:hover { opacity: 0.85; }
