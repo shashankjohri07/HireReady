@@ -37,6 +37,11 @@
   --code-bg: #171717;
   --code-text: #e5e5e5;
   --overlay: rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+
+  --status-interview: #2563eb;
+  --status-offer: #16a34a;
+  --color-danger: #dc2626;
 }
 
 [data-theme="dark"] {
@@ -62,6 +67,11 @@
   --code-bg: #1c1c1c;
   --code-text: #d4d4d4;
   --overlay: rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+
+  --status-interview: #60a5fa;
+  --status-offer: #4ade80;
+  --color-danger: #f87171;
 }
 
 html, body, #root { height: 100%; }

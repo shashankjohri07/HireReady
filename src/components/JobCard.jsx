@@ -35,7 +35,7 @@ export default function JobCard({ job, onDragStart, onEdit, onDelete, onPrep }) 
       <div className={styles.meta}>
         {dateStr && <span className={styles.badge}>{dateStr}</span>}
         {job.salary && <span className={styles.badge}>{job.salary}</span>}
-        {job.notes && (
+{job.notes && (
           <span className={styles.notePreview} title={job.notes}>
             {job.notes.length > 40 ? job.notes.slice(0, 40) + '…' : job.notes}
           </span>

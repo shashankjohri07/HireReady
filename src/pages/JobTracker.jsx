@@ -21,11 +21,11 @@ export default function JobTracker() {
     try { return JSON.parse(localStorage.getItem('hr_jobs') || '[]'); }
     catch { return []; }
   });
-  const [modal, setModal] = useState(null);
+  const [modal,       setModal]       = useState(null);
   const [dragOverCol, setDragOverCol] = useState(null);
-  const [dragId, setDragId] = useState(null);
-  const [prepJob, setPrepJob] = useState(null);
-  const [view, setView] = useState('board');
+  const [dragId,      setDragId]      = useState(null);
+  const [prepJob,     setPrepJob]     = useState(null);
+  const [view,        setView]        = useState('board');
 
   const { messages, streaming, loading, error, sendMessage, reset } = useChat('jobtracker');
 
@@ -34,18 +34,18 @@ export default function JobTracker() {
   }, [jobs]);
 
   function addJob(data) {
-    setJobs((p) => [...p, { id: uid(), ...data }]);
+    setJobs(p => [...p, { id: uid(), ...data }]);
     setModal(null);
   }
 
   function updateJob(id, data) {
-    setJobs((p) => p.map((j) => (j.id === id ? { ...j, ...data } : j)));
+    setJobs(p => p.map(j => j.id === id ? { ...j, ...data } : j));
     setModal(null);
   }
 
   function deleteJob(id) {
     if (!confirm('Remove this job?')) return;
-    setJobs((p) => p.filter((j) => j.id !== id));
+    setJobs(p => p.filter(j => j.id !== id));
   }
 
   function handleDragStart(e, jobId) {
@@ -57,7 +57,7 @@ export default function JobTracker() {
   function handleDrop(e, status) {
     e.preventDefault();
     const id = e.dataTransfer.getData('jobId');
-    setJobs((p) => p.map((j) => (j.id === id ? { ...j, status } : j)));
+    setJobs(p => p.map(j => j.id === id ? { ...j, status } : j));
     setDragOverCol(null);
     setDragId(null);
   }
@@ -79,9 +79,8 @@ export default function JobTracker() {
     }, 50);
   }
 
-  // Stats
   const counts = Object.fromEntries(
-    COLUMNS.map((c) => [c.id, jobs.filter((j) => j.status === c.id).length])
+    COLUMNS.map(c => [c.id, jobs.filter(j => j.status === c.id).length])
   );
   const interviewRate = counts.applied > 0
     ? Math.round((counts.interview / counts.applied) * 100)
@@ -118,10 +117,9 @@ export default function JobTracker() {
 
   return (
     <div className={styles.page}>
-      {/* Stats + actions bar */}
       <div className={styles.topBar}>
         <div className={styles.stats}>
-          {COLUMNS.map((col) => (
+          {COLUMNS.map(col => (
             <div key={col.id} className={styles.stat}>
               <span className={styles.statNum}>{counts[col.id]}</span>
               <span className={styles.statLabel}>{col.label}</span>
@@ -141,21 +139,18 @@ export default function JobTracker() {
         </button>
       </div>
 
-      {/* Kanban board */}
       <div className={styles.board}>
-        {COLUMNS.map((col) => {
-          const colJobs = jobs.filter((j) => j.status === col.id);
-          const isOver = dragOverCol === col.id;
+        {COLUMNS.map(col => {
+          const colJobs = jobs.filter(j => j.status === col.id);
+          const isOver  = dragOverCol === col.id;
 
           return (
             <div
               key={col.id}
               className={`${styles.column} ${isOver ? styles.columnOver : ''}`}
-              onDragOver={(e) => { e.preventDefault(); setDragOverCol(col.id); }}
-              onDragLeave={(e) => {
-                if (!e.currentTarget.contains(e.relatedTarget)) setDragOverCol(null);
-              }}
-              onDrop={(e) => handleDrop(e, col.id)}
+              onDragOver={e => { e.preventDefault(); setDragOverCol(col.id); }}
+              onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget)) setDragOverCol(null); }}
+              onDrop={e => handleDrop(e, col.id)}
             >
               <div className={styles.colHeader}>
                 <span className={`${styles.colLabel} ${styles[`col_${col.id}`]}`}>
@@ -170,7 +165,7 @@ export default function JobTracker() {
                     Drop here
                   </div>
                 )}
-                {colJobs.map((job) => (
+                {colJobs.map(job => (
                   <JobCard
                     key={job.id}
                     job={job}
@@ -197,7 +192,9 @@ export default function JobTracker() {
       {jobs.length === 0 && (
         <div className={styles.emptyBoard}>
           <p className={styles.emptyTitle}>No jobs tracked yet</p>
-          <p className={styles.emptySub}>Add your first application to start tracking your job hunt.</p>
+          <p className={styles.emptySub}>
+            Paste any job URL when adding — company and role fill in automatically.
+          </p>
           <button
             className={styles.emptyAddBtn}
             onClick={() => setModal({ mode: 'add', status: 'applied' })}
@@ -212,7 +209,7 @@ export default function JobTracker() {
           mode={modal.mode}
           initialStatus={modal.status}
           job={modal.job}
-          onSave={modal.mode === 'add' ? addJob : (data) => updateJob(modal.job.id, data)}
+          onSave={modal.mode === 'add' ? addJob : data => updateJob(modal.job.id, data)}
           onClose={() => setModal(null)}
         />
       )}

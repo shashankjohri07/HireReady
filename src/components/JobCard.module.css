@@ -70,7 +70,7 @@
 }
 
 .action:hover { color: var(--text); background: var(--surface-2); }
-.actionDelete:hover { color: #dc2626; }
+.actionDelete:hover { color: var(--color-danger); }
 
 .meta {
   display: flex;
@@ -85,6 +85,17 @@
   border-radius: 4px;
   padding: 2px 6px;
   border: 1px solid var(--border);
+}
+
+.gmailBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  letter-spacing: 0.02em;
 }
 
 .notePreview {
