@@ -23,11 +23,20 @@ async function extractText(file) {
 }
 
 export default function ResumeAnalyzer() {
-  const [stage, setStage] = useState('upload'); // 'upload' | 'parsing' | 'chat'
-  const [parseError, setParseError] = useState(null);
-  const [dragOver, setDragOver] = useState(false);
-  const fileInputRef = useRef(null);
   const { messages, streaming, loading, error, sendMessage, reset } = useChat('resume');
+
+  // Restore stage from session — if we have saved messages, go straight to chat
+  const [stage, setStage] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('hr_chat_resume');
+      return saved && JSON.parse(saved).length > 0 ? 'chat' : 'upload';
+    } catch { return 'upload'; }
+  });
+
+  const [fileName,   setFileName]   = useState(() => sessionStorage.getItem('hr_resume_file') || null);
+  const [parseError, setParseError] = useState(null);
+  const [dragOver,   setDragOver]   = useState(false);
+  const fileInputRef = useRef(null);
 
   async function handleFile(file) {
     if (!file) return;
@@ -40,6 +49,8 @@ export default function ResumeAnalyzer() {
     setStage('parsing');
     try {
       const text = await extractText(file);
+      sessionStorage.setItem('hr_resume_file', file.name);
+      setFileName(file.name);
       setStage('chat');
       setTimeout(() => {
         sendMessage(`Please review my resume:\n\n${text}`);
@@ -60,7 +71,14 @@ export default function ResumeAnalyzer() {
     reset();
     setStage('upload');
     setParseError(null);
+    setFileName(null);
+    sessionStorage.removeItem('hr_resume_file');
   }
+
+  // Hide the raw resume text from the chat UI — the AI analysis is what matters
+  const displayMessages = messages.filter(
+    m => !(m.role === 'user' && m.content.startsWith('Please review my resume:'))
+  );
 
   if (stage === 'chat') {
     return (
@@ -70,10 +88,21 @@ export default function ResumeAnalyzer() {
             <h1 className={styles.title}>Resume Analyzer</h1>
             <p className={styles.desc}>Ask follow-up questions — your resume is in context for the whole session.</p>
           </div>
-          <button className={styles.restartBtn} onClick={handleReset}>Upload new resume</button>
+          <div className={styles.headerRight}>
+            {fileName && (
+              <span className={styles.fileBadge}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+                {fileName}
+              </span>
+            )}
+            <button className={styles.restartBtn} onClick={handleReset}>Upload new resume</button>
+          </div>
         </div>
         <ChatWindow
-          messages={messages}
+          messages={displayMessages}
           streaming={streaming}
           loading={loading}
           error={error}
@@ -96,7 +125,7 @@ export default function ResumeAnalyzer() {
         <div
           className={`${styles.dropzone} ${dragOver ? styles.dropzoneActive : ''} ${stage === 'parsing' ? styles.dropzoneParsing : ''}`}
           onClick={() => stage !== 'parsing' && fileInputRef.current?.click()}
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragOver={e => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
         >
@@ -105,7 +134,7 @@ export default function ResumeAnalyzer() {
             type="file"
             accept=".pdf,.txt"
             style={{ display: 'none' }}
-            onChange={(e) => handleFile(e.target.files[0])}
+            onChange={e => handleFile(e.target.files[0])}
           />
 
           {stage === 'parsing' ? (

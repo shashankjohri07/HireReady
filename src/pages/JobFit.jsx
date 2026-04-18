@@ -1,20 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useChat } from '../hooks/useChat.js';
 import ChatWindow from '../components/ChatWindow.jsx';
 import styles from './JobFit.module.css';
 
 export default function JobFit() {
-  const [background, setBackground] = useState('');
-  const [jd, setJd] = useState('');
-  const [submitted, setSubmitted] = useState(false);
   const { messages, streaming, loading, error, sendMessage, reset } = useChat('jobfit');
+
+  const [background, setBackground] = useState(() =>
+    sessionStorage.getItem('hr_jobfit_bg') || ''
+  );
+  const [jd, setJd] = useState(() =>
+    sessionStorage.getItem('hr_jobfit_jd') || ''
+  );
+  const [submitted, setSubmitted] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('hr_chat_jobfit');
+      return saved && JSON.parse(saved).length > 0;
+    } catch { return false; }
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('hr_jobfit_bg', background);
+  }, [background]);
+
+  useEffect(() => {
+    sessionStorage.setItem('hr_jobfit_jd', jd);
+  }, [jd]);
 
   function handleSubmit() {
     if (!background.trim() || !jd.trim()) return;
     setSubmitted(true);
-    sendMessage(
-      `My background:\n${background}\n\n---\n\nJob description:\n${jd}`
-    );
+    sendMessage(`My background:\n${background}\n\n---\n\nJob description:\n${jd}`);
   }
 
   function handleReset() {
@@ -22,6 +38,8 @@ export default function JobFit() {
     setBackground('');
     setJd('');
     setSubmitted(false);
+    sessionStorage.removeItem('hr_jobfit_bg');
+    sessionStorage.removeItem('hr_jobfit_jd');
   }
 
   return (
@@ -40,7 +58,7 @@ export default function JobFit() {
             <textarea
               className={styles.input}
               value={background}
-              onChange={(e) => setBackground(e.target.value)}
+              onChange={e => setBackground(e.target.value)}
               placeholder="Paste your resume or describe your experience — years of exp, skills, projects, current role..."
               rows={8}
             />
@@ -50,7 +68,7 @@ export default function JobFit() {
             <textarea
               className={styles.input}
               value={jd}
-              onChange={(e) => setJd(e.target.value)}
+              onChange={e => setJd(e.target.value)}
               placeholder="Paste the full job description here..."
               rows={8}
             />
@@ -66,15 +84,22 @@ export default function JobFit() {
           </div>
         </div>
       ) : (
-        <ChatWindow
-          messages={messages}
-          streaming={streaming}
-          loading={loading}
-          error={error}
-          onSend={sendMessage}
-          onReset={handleReset}
-          placeholder="Ask about specific skill gaps or prep strategies..."
-        />
+        <>
+          <div className={styles.chatActions}>
+            <button className={styles.resetBtn} onClick={handleReset}>
+              Start over
+            </button>
+          </div>
+          <ChatWindow
+            messages={messages}
+            streaming={streaming}
+            loading={loading}
+            error={error}
+            onSend={sendMessage}
+            onReset={handleReset}
+            placeholder="Ask about specific skill gaps or prep strategies..."
+          />
+        </>
       )}
     </div>
   );

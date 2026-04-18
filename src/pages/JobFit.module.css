@@ -91,3 +91,23 @@
 
 .submitBtn:hover:not(:disabled) { opacity: 0.85; }
 .submitBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.chatActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 24px 0;
+  flex-shrink: 0;
+}
+
+.resetBtn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.12s, border-color 0.12s;
+}
+
+.resetBtn:hover { color: var(--text); border-color: var(--border-hover); }
