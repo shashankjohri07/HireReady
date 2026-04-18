@@ -1,12 +1,12 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
-  padding: 24px;
+  padding: 16px;
   backdrop-filter: blur(2px);
 }
 
@@ -16,8 +16,10 @@
   border-radius: var(--radius-xl);
   width: 100%;
   max-width: 520px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
   overflow: hidden;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
 }
 
 .modalHeader {
@@ -84,7 +86,7 @@
   color: var(--text);
   outline: none;
   font-family: inherit;
-  transition: border-color 0.12s;
+  transition: border-color 0.12s, background 0.12s;
   width: 100%;
 }
 
@@ -127,3 +129,9 @@
 
 .saveBtn:disabled { opacity: 0.3; cursor: not-allowed; }
 .saveBtn:not(:disabled):hover { opacity: 0.85; }
+
+@media (max-width: 480px) {
+  .overlay { padding: 12px; align-items: flex-end; }
+  .modal { border-bottom-left-radius: 0; border-bottom-right-radius: 0; max-height: 90vh; }
+  .row { grid-template-columns: 1fr; }
+}

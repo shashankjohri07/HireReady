@@ -2,11 +2,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
+  padding: 0 24px;
   height: 52px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   background: var(--bg);
+  gap: 8px;
 }
 
 /* Logo */
@@ -15,6 +16,11 @@
   align-items: center;
   gap: 8px;
   text-decoration: none;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
 }
 
 .logoMark {
@@ -32,20 +38,17 @@
   flex-shrink: 0;
 }
 
-.logo span + span,
-.logo span ~ * {
+.logoText {
   font-size: 14px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.3px;
 }
 
-/* The text node after the logoMark */
-.logo {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.3px;
+/* Right section: links + theme toggle */
+.right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* Nav links */
@@ -60,10 +63,11 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--muted);
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: var(--radius-sm);
   transition: color 0.12s, background 0.12s;
   letter-spacing: -0.1px;
+  white-space: nowrap;
 }
 
 .link:hover {
@@ -85,4 +89,33 @@
   height: 2px;
   background: var(--text);
   border-radius: 999px;
+}
+
+/* Theme toggle */
+.themeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+.themeBtn:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+  background: var(--surface-2);
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .nav { padding: 0 16px; }
+  .logoText { display: none; }
+  .link { padding: 6px 8px; font-size: 12px; }
 }

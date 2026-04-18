@@ -112,11 +112,11 @@
 
 .parseError {
   font-size: 13px;
-  color: #dc2626;
+  color: var(--error);
   padding: 10px 16px;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--error-border);
   border-radius: var(--radius);
-  background: #fef2f2;
+  background: var(--error-bg);
 }
 
 /* Tips section */
@@ -139,4 +139,10 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 4px 10px;
+}
+
+@media (max-width: 600px) {
+  .header { padding: 20px 16px 0; flex-wrap: wrap; }
+  .uploadArea { padding: 16px; }
+  .dropzone { padding: 32px 20px; }
 }

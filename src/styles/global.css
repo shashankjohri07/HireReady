@@ -29,6 +29,39 @@
   --radius: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
+
+  /* Semantic tokens */
+  --error: #dc2626;
+  --error-border: #fecaca;
+  --error-bg: #fef2f2;
+  --code-bg: #171717;
+  --code-text: #e5e5e5;
+  --overlay: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] {
+  --bg: #0f0f0f;
+  --surface: #141414;
+  --surface-2: #1c1c1c;
+  --surface-3: #232323;
+  --border: #2a2a2a;
+  --border-hover: #3d3d3d;
+  --text: #ebebeb;
+  --text-2: #c9c9c9;
+  --muted: #6b6b6b;
+  --muted-2: #4a4a4a;
+  --inverse-bg: #ebebeb;
+  --inverse-text: #0f0f0f;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+  --shadow: 0 2px 8px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.4);
+
+  --error: #f87171;
+  --error-border: #450a0a;
+  --error-bg: #1a0505;
+  --code-bg: #1c1c1c;
+  --code-text: #d4d4d4;
+  --overlay: rgba(0, 0, 0, 0.6);
 }
 
 html, body, #root { height: 100%; }
@@ -74,7 +107,7 @@ textarea, input { font-family: inherit; }
   color: var(--text);
 }
 .prose pre {
-  background: var(--text);
+  background: var(--code-bg);
   border-radius: var(--radius);
   padding: 16px;
   overflow-x: auto;
@@ -85,7 +118,7 @@ textarea, input { font-family: inherit; }
   border: none;
   padding: 0;
   font-size: 0.8rem;
-  color: #e5e5e5;
+  color: var(--code-text);
 }
 .prose strong { font-weight: 700; color: var(--text); }
 .prose blockquote {
